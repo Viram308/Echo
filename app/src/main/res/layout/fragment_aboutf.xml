@@ -1,0 +1,57 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:background="#ffffff"
+    >
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/devoloper"
+        android:scaleType="centerCrop"
+        android:rotation="270"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="130dp"
+        android:id="@+id/devoloper"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/devoloper"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textColor="#212121"
+        android:text="This app is made by Viram Shah as"
+        android:id="@+id/f"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/f"
+        android:layout_centerHorizontal="true"
+
+        android:textColor="#212121"
+        android:text="a part of Internshala Online Android"
+        android:id="@+id/s"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/s"
+        android:layout_centerHorizontal="true"
+
+        android:textColor="#212121"
+        android:text="Training Project"
+        android:id="@+id/t"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/t"
+        android:layout_centerHorizontal="true"
+
+        android:textColor="#212121"
+        android:text="App version: 1.0"
+        android:id="@+id/appVersion"
+        />
+</RelativeLayout>
+

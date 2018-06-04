@@ -1,0 +1,81 @@
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/visiblelayout"
+    android:clickable="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/mainrecycle">
+    </android.support.v7.widget.RecyclerView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:id="@+id/hiddenbar"
+            android:visibility="invisible"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:id="@+id/playpausebutton"
+                android:layout_marginRight="31dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:background="@drawable/pause_icon"/>
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="13dp"
+                android:background="@drawable/now_playing_bar_eq_image"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:id="@+id/bazz"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Now Playing"
+                android:layout_toRightOf="@id/bazz"
+                android:textColor="#bdbdbd"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="11dp"
+                android:id="@+id/nowplaying"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/songtitle"
+                android:layout_below="@id/nowplaying"
+                android:layout_toRightOf="@id/bazz"
+                android:layout_alignLeft="@id/nowplaying"
+                android:layout_alignStart="@id/nowplaying"
+                android:text="..."
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#ffffff"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:maxWidth="160dp"
+                android:maxLines="1"/>
+
+        </RelativeLayout>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/nosongs"
+    android:visibility="invisible"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:text="You Don't Have Any Songs On Your Device"
+        android:layout_centerInParent="true"
+
+        />
+</RelativeLayout>
+
+</RelativeLayout>
