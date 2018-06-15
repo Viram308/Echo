@@ -228,15 +228,15 @@ in the song playing fragment
 * we pass the details of the current song being played to the song playing
 fragment using Bundle*/
             args.putString("songArtist",
-                    songf.Statified.currentSongHelper?.songArtist)
+                    songf.Statified.currentSongHelper.songArtist)
             args.putString("songTitle",
-                    songf.Statified.currentSongHelper?.songTitle)
+                    songf.Statified.currentSongHelper.songTitle)
             args.putString("songPath",
-                    songf.Statified.currentSongHelper?.songPath)
+                    songf.Statified.currentSongHelper.songPath)
             args.putInt("songId",
-                    songf.Statified.currentSongHelper?.songId?.toInt() as Int)
+                    songf.Statified.currentSongHelper.songId?.toInt() as Int)
             args.putInt("songPosition",
-                    songf.Statified.currentSongHelper?.currentPosition?.toInt() as Int)
+                    songf.Statified.currentSongHelper.currentPosition?.toInt() as Int)
             args.putParcelableArrayList("songData",
                     songf.Statified.fetchSongs)
 /*Here we put the additional string in the bundle

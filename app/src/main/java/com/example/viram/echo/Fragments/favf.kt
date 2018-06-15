@@ -40,8 +40,8 @@ class favf : Fragment() {
     /*This variable will be used for database instance*/
     var favoriteContent: EchoDatabase? = null
     /*Variable to store favorites*/
-    var refreshList: ArrayList<Songs> = arrayListOf()
-    var getListfromDatabase: ArrayList<Songs>? = null
+    var refreshList: ArrayList<Songs>? = null
+    var getListfromDatabase: ArrayList<Songs> = arrayListOf()
 
     object Statified {
         var mediaPlayer: MediaPlayer? = null
@@ -122,7 +122,6 @@ class favf : Fragment() {
         }
         return arraylist
     }
-
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
 /*The bottom bar setup function is used to place the bottom bar on the favorite screen
@@ -231,56 +230,59 @@ position
     /*The below function is used to search the favorites and display*/
     fun display_favorites_by_searching() {
 
-/*Checking if database has any entry or not*/
+
         if (favoriteContent?.checkSize() as Int > 0) {
 
-/*New list for storing the favorites*/
-
-
-/*Getting the list of songs from database*/
-            getListfromDatabase = favoriteContent?.queryDBList()
-/*Getting list of songs from phone storage*/
             val fetchListfromDevice: ArrayList<Songs>? = getsong()
-/*If there are no songs in phone then there cannot be any favorites*/
+
             if (fetchListfromDevice != null) {
-                var id: Int = 0
+                var id=0
+                var flag=0
+                for (i in 0..favoriteContent?.checkSize() as Int - 1) {
+                    flag=0
 
-
-                /*Then we check all the songs in the phone*/
-                for (i in 0..fetchListfromDevice.size - 1) {
-/*We iterate through every song in database*/
-
-
-/*While iterating through all the songs we check for the songs
-which are in both the lists
-* i.e. the favorites songs*/
-                    id = fetchListfromDevice.get(i).songID.toInt()
-
-                    if (favoriteContent?.checkifIdExists(id) as Boolean) {
+                    id = favoriteContent?.queryDBList(i+1)!!
+                    for(j in 0..fetchListfromDevice.size - 1)
+                    {
+                        if(fetchListfromDevice[j].songID.toInt() == id)
+                        {
+                            flag=1
+                        }
+                    }
+                    if(flag==0)
+                        favoriteContent?.deleteFavorite(id)
+                    /*if (favoriteContent?.checkifIdExists(id) as Boolean) {
                         var current_id = fetchListfromDevice[i].songID
                         var current_title = fetchListfromDevice[i].songTitle
                         var current_artist = fetchListfromDevice[i].artist
                         var current_songpath = fetchListfromDevice[i].songData
                         var current_dateadded = fetchListfromDevice[i].dateAdded
-
-                        refreshList.add(Songs(current_id, current_title, current_artist, current_songpath, current_dateadded))
-                       }
-
-                    }
-
+                        refreshList?.add(Songs(current_id, current_title, current_artist, current_songpath, current_dateadded))
+                       }*/
+                }
             } else {
             }
-            if (refreshList == null) {
+
+//            var siz: Int=favoriteContent?.checkSize() as Int
+//            if(siz>1)
+//                Toast.makeText(myactivity,">1",Toast.LENGTH_SHORT).show()
+//            else if(siz== 1)
+//                Toast.makeText(myactivity,"=1",Toast.LENGTH_SHORT).show()
+//            else
+//                Toast.makeText(myactivity,"<1",Toast.LENGTH_SHORT).show()
+            if (favoriteContent?.checkSize() == 0) {
                 recyclerView?.visibility = View.INVISIBLE
                 noFavorites?.visibility = View.VISIBLE
             } else {
 /*Else we setup our recycler view for displaying the favorite songs*/
-                val favoriteAdapter = FavoriteAdaptor(refreshList as ArrayList<Songs>, myactivity as Context)
+                val favoriteAdapter = FavoriteAdaptor(favoriteContent?.queryDBList() as ArrayList<Songs>, myactivity as Context)
                 val mLayoutManager = LinearLayoutManager(myactivity)
                 recyclerView?.layoutManager = mLayoutManager
                 recyclerView?.itemAnimator = DefaultItemAnimator()
-                recyclerView?.adapter = favoriteAdapter
                 recyclerView?.setHasFixedSize(true)
+                recyclerView?.adapter = favoriteAdapter
+                favoriteAdapter.notifyDataSetChanged()
+
             }
 /*If refresh list is null we display that there are no favorites*/
 

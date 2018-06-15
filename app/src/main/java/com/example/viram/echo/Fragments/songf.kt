@@ -31,6 +31,7 @@ import com.example.viram.echo.Songs
 import kotlinx.android.synthetic.main.raws_for_mainscreen.*
 import java.util.*
 import java.util.concurrent.TimeUnit
+import android.util.Log
 
 
 /**
@@ -101,7 +102,28 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
         //To change body of created functions use File | Settings | File Templates.
     }
-
+    @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        setHasOptionsMenu(true)
+        val view = inflater!!.inflate(R.layout.fragment_songf, container, false)
+        activity.title = "Now Playing"
+        Statified.seekBar = view?.findViewById(R.id.seekbar)
+        Statified.startTimeText = view?.findViewById(R.id.starttime)
+        Statified.endTimeText = view?.findViewById(R.id.endtime)
+        Statified.playPauseImageButton = view?.findViewById(R.id.playpause)
+        Statified.nextImageButton = view?.findViewById(R.id.next)
+        Statified.previousImageButton = view?.findViewById(R.id.previous)
+        Statified.loopImageButton = view?.findViewById(R.id.loop)
+        Statified.shuffleImageButton = view?.findViewById(R.id.shuffle)
+        Statified.songArtistView = view?.findViewById(R.id.songartistsongf)
+        Statified.songTitleView = view?.findViewById(R.id.songtitlesongf)
+        Statified.glView = view?.findViewById(R.id.visualizer_view)
+        Statified.fab = view?.findViewById(R.id.favouriteicon)
+        Statified.fab?.alpha = 0.8f
+        return view
+    }
     object Staticated {
         var MY_PREFS_SHUFFLE = "Shuffle feature"
         var MY_PREFS_LOOP = "Loop feature"
@@ -240,28 +262,7 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
     var mAccelarationCurrent: Float = 0f
     var mAccelarationLast: Float = 0f
 
-    @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true)
-        val view = inflater!!.inflate(R.layout.fragment_songf, container, false)
-        activity.title = "Now Playing"
-        Statified.seekBar = view?.findViewById(R.id.seekbar)
-        Statified.startTimeText = view?.findViewById(R.id.starttime)
-        Statified.endTimeText = view?.findViewById(R.id.endtime)
-        Statified.playPauseImageButton = view?.findViewById(R.id.playpause)
-        Statified.nextImageButton = view?.findViewById(R.id.next)
-        Statified.previousImageButton = view?.findViewById(R.id.previous)
-        Statified.loopImageButton = view?.findViewById(R.id.loop)
-        Statified.shuffleImageButton = view?.findViewById(R.id.shuffle)
-        Statified.songArtistView = view?.findViewById(R.id.songartistsongf)
-        Statified.songTitleView = view?.findViewById(R.id.songtitlesongf)
-        Statified.glView = view?.findViewById(R.id.visualizer_view)
-        Statified.fab = view?.findViewById(R.id.favouriteicon)
-        Statified.fab?.alpha = 0.8f
-        return view
-    }
+
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -306,6 +307,8 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
         mAccelarationLast = SensorManager.GRAVITY_EARTH
         bindShakeListener()
     }
+
+
 
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -374,11 +377,15 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
             Statified.mediaplayer = favf.Statified.mediaPlayer
             var songTitleUpdated = arguments.getString("songTitle")
             var songartistUpdated = arguments.getString("songArtist")
+            var sid=arguments.getInt("songId").toLong()
+            var spath=arguments.getString("songPath")
+            Statified.currentSongHelper.songId=sid
             Statified.currentSongHelper.songTitle = songTitleUpdated
             Statified.currentSongHelper.songArtist = songartistUpdated
+            Statified.currentSongHelper.songPath=spath
             Statified.songTitleView?.setText(songTitleUpdated)
             Statified.songArtistView?.setText(songartistUpdated)
-            if(Statified.favoriteContent?.checkifIdExists(Statified.currentSongHelper.songId.toInt()) as Boolean)
+            //if(Statified.favoriteContent?.checkifIdExists(Statified.currentSongHelper.songId.toInt()) as Boolean)
             Statified.fab?.setImageDrawable(ContextCompat.getDrawable(Statified.myactivity, R.drawable.favorite_on))
 
 
@@ -386,8 +393,12 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
             Statified.mediaplayer = mainf.Statified.mediaPlayer
             var songTitleUpdated = arguments.getString("songTitle")
             var songartistUpdated = arguments.getString("songArtist")
+            var sid=arguments.getInt("songId").toLong()
+            var spath=arguments.getString("songPath")
             Statified.currentSongHelper.songTitle = songTitleUpdated
             Statified.currentSongHelper.songArtist = songartistUpdated
+            Statified.currentSongHelper.songPath=spath
+            Statified.currentSongHelper.songId=sid
             Statified.songTitleView?.setText(songTitleUpdated)
             Statified.songArtistView?.setText(songartistUpdated)
 
@@ -455,7 +466,7 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
             } else {
                 Statified.fab?.setImageDrawable(ContextCompat.getDrawable(Statified.myactivity, R.drawable.favorite_on))
                 if (!(Statified.favoriteContent?.checkifIdExists(Statified.currentSongHelper.songId.toInt()) as Boolean)) {
-                    Statified.favoriteContent?.storeAsFavorite(Statified.currentSongHelper!!.songId.toInt(), Statified.currentSongHelper!!.songArtist.toString(), Statified.currentSongHelper!!.songTitle.toString(), Statified.currentSongHelper!!.songPath.toString())
+                    Statified.favoriteContent?.storeAsFavorite(Statified.currentSongHelper.songId.toInt(), Statified.currentSongHelper.songArtist.toString(), Statified.currentSongHelper.songTitle.toString(), Statified.currentSongHelper.songPath.toString())
 
                     Toast.makeText(Statified.myactivity, "Added to Favorites", Toast.LENGTH_SHORT).show()
                 } else {

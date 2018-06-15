@@ -34,7 +34,6 @@ class FavoriteAdaptor(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
         this.mContext = _context
     }
 
-
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
 
