@@ -37,7 +37,7 @@ import android.util.Log
 /**
  * A simple [Fragment] subclass.
  */
-class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
+class songf : Fragment() {
 
 
     object Statified {
@@ -68,40 +68,77 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
         var updateSongTime = object : Runnable {
             override fun run() {
 
-
+//Statified.seekBar?.setProgress(Statified.mediaplayer?.currentPosition as Int)
                 /*Retrieving the current time position of the media player*/
-                var getCurrent = Statified.mediaplayer?.currentPosition
-
 
                 /*The start time is set to the current position of the song
                 * The TimeUnit class changes the units to minutes and milliseconds and applied to the string
                 * The %d:%d is used for formatting the time strings as 03:45 so that it appears like time*/
-                Statified.seekBar?.setProgress(getCurrent as Int)
+                Statified.seekBar?.setProgress(Statified.mediaplayer?.currentPosition as Int)
+                initlistener()
+                if (TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long) > 9 && TimeUnit.MILLISECONDS.toSeconds(Statified.mediaplayer?.currentPosition?.toLong() as Long)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long)) > 9) {
+                    Statified.startTimeText?.setText(String.format("%d:%d",
+                            TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long),
+                            TimeUnit.MILLISECONDS.toSeconds(Statified.mediaplayer?.currentPosition?.toLong() as Long)
+                                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long))))
 
-                startTimeText?.setText(String.format("%d:%d",
-                        TimeUnit.MILLISECONDS.toMinutes(getCurrent?.toLong() as Long),
-                        TimeUnit.MILLISECONDS.toSeconds(getCurrent?.toLong()) -
-                                TimeUnit.MILLISECONDS.toSeconds(TimeUnit.MILLISECONDS.toMinutes(getCurrent?.toLong()))))
+                    /*Similar to above is done for the end time text*/
+
+                } else if (TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long) <= 9 && TimeUnit.MILLISECONDS.toSeconds(Statified.mediaplayer?.currentPosition?.toLong() as Long)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long)) > 9) {
+                    Statified.startTimeText?.setText(String.format("0%d:%d",
+                            TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long),
+                            TimeUnit.MILLISECONDS.toSeconds(Statified.mediaplayer?.currentPosition?.toLong() as Long)
+                                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long))))
+
+                    /*Similar to above is done for the end time text*/
+
+                } else if (TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long) > 9 && TimeUnit.MILLISECONDS.toSeconds(Statified.mediaplayer?.currentPosition?.toLong() as Long)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long)) <= 9) {
+                    Statified.startTimeText?.setText(String.format("%d:0%d",
+                            TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long),
+                            TimeUnit.MILLISECONDS.toSeconds(Statified.mediaplayer?.currentPosition?.toLong() as Long)
+                                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long))))
+
+                    /*Similar to above is done for the end time text*/
+
+                } else if (TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long) <= 9 && TimeUnit.MILLISECONDS.toSeconds(Statified.mediaplayer?.currentPosition?.toLong() as Long)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long)) <= 9) {
+                    Statified.startTimeText?.setText(String.format("0%d:0%d",
+                            TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long),
+                            TimeUnit.MILLISECONDS.toSeconds(Statified.mediaplayer?.currentPosition?.toLong() as Long)
+                                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(Statified.mediaplayer?.currentPosition?.toLong() as Long))))
+
+                    /*Similar to above is done for the end time text*/
+
+                }
 
 
                 /*Since updating the time at each second will take a lot of processing, so we perform this task on the different thread using Handler*/
                 Handler().postDelayed(this, 1000)
             }
+
+            private fun initlistener() {
+               // Log.e("gayo", "gayo")
+                Statified.seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                        if (b) {
+                            Statified.mediaplayer?.seekTo(i)
+                        }
+                    }
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar) {
+                    }
+
+                    override fun onStopTrackingTouch(seekBar: SeekBar) {
+                    }
+                }) //To change body of created functions use File | Settings | File Templates.
+            }
         }
     }
 
-    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        Toast.makeText(Statified.myactivity, progress.toString(), Toast.LENGTH_SHORT).show()
 
-    }
-
-    override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
-    }
-
-    override fun onStopTrackingTouch(seekBar: SeekBar?) {
-        //To change body of created functions use File | Settings | File Templates.
-    }
     @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -124,6 +161,7 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
         Statified.fab?.alpha = 0.8f
         return view
     }
+
     object Staticated {
         var MY_PREFS_SHUFFLE = "Shuffle feature"
         var MY_PREFS_LOOP = "Loop feature"
@@ -191,19 +229,79 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
             val startTime = mediaPlayer.currentPosition
             Statified.seekBar?.max = finalTime
             /*Here we format the time and set it to the start time text*/
-            Statified.startTimeText?.setText(String.format("%2d:%2d",
-                    TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()),
-                    TimeUnit.MILLISECONDS.toSeconds(startTime.toLong())
-                            - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startTime.toLong())))
-            )
+            if (TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()) > 9 && TimeUnit.MILLISECONDS.toSeconds(startTime.toLong())
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startTime.toLong())) > 9) {
+                Statified.startTimeText?.setText(String.format("%d:%d",
+                        TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(startTime.toLong())
+                                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()))))
 
-            /*Similar to above is done for the end time text*/
-            Statified.endTimeText?.setText(String.format("%2d:%2d",
-                    TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
-                    TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong())
-                            - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())))
-            )
+                /*Similar to above is done for the end time text*/
 
+            } else if (TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()) > 9 && TimeUnit.MILLISECONDS.toSeconds(startTime.toLong())
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startTime.toLong())) <= 9) {
+                Statified.startTimeText?.setText(String.format("%d:0%d",
+                        TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(startTime.toLong())
+                                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()))))
+
+                /*Similar to above is done for the end time text*/
+
+            } else if (TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()) <= 9 && TimeUnit.MILLISECONDS.toSeconds(startTime.toLong())
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startTime.toLong())) > 9) {
+                Statified.startTimeText?.setText(String.format("0%d:%d",
+                        TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(startTime.toLong())
+                                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()))))
+
+
+            } else if (TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()) <= 9 && TimeUnit.MILLISECONDS.toSeconds(startTime.toLong())
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startTime.toLong())) <= 9) {
+                Statified.startTimeText?.setText(String.format("0%d:0%d",
+                        TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(startTime.toLong())
+                                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(startTime.toLong()))))
+
+                /*Similar to above is done for the end time text*/
+
+            }
+            if (TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()) > 9 && TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong())
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())) > 9) {
+                Statified.endTimeText?.setText(String.format("%d:%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong())
+                                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()))))
+
+                /*Similar to above is done for the end time text*/
+
+            } else if (TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()) <= 9 && TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong())
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())) > 9) {
+                Statified.endTimeText?.setText(String.format("0%d:%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong())
+                                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()))))
+
+                /*Similar to above is done for the end time text*/
+
+            } else if (TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()) > 9 && TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong())
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())) <= 9) {
+                Statified.endTimeText?.setText(String.format("%d:0%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong())
+                                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()))))
+
+                /*Similar to above is done for the end time text*/
+
+            } else if (TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()) <= 9 && TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong())
+                    - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong())) <= 9) {
+                Statified.endTimeText?.setText(String.format("0%d:0%d",
+                        TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()),
+                        TimeUnit.MILLISECONDS.toSeconds(finalTime.toLong())
+                                - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finalTime.toLong()))))
+
+                /*Similar to above is done for the end time text*/
+
+            }
             Statified.seekBar?.setProgress(Statified.mediaplayer?.currentPosition as Int)
 
             /*Seekbar has been assigned this time so that it moves according to the time of song*/
@@ -263,7 +361,6 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
     var mAccelarationLast: Float = 0f
 
 
-
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Statified.audioVisualization = Statified.glView as AudioVisualization
@@ -297,9 +394,15 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
         Statified.audioVisualization?.release()
     }
 
+    fun initlistener() {
+
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Statified.seekBar?.setOnSeekBarChangeListener(this)
+        //Log.e("avi gayo", " avi gayo")
+
 
         Statified.mSensorManager = Statified.myactivity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mAccelaration = 0.0f
@@ -309,14 +412,22 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
     }
 
 
-
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu?.clear()
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.song_playing_menu, menu)
+        if (Statified.seekBar != null) {
+            var value: Int? = null
+            if (Statified.mediaplayer != null) {
+                value = Statified.mediaplayer?.duration
+
+            }
+            Statified.seekBar?.max = value as Int
+        }
+
 
     }
+
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
         super.onPrepareOptionsMenu(menu)
@@ -377,31 +488,45 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
             Statified.mediaplayer = favf.Statified.mediaPlayer
             var songTitleUpdated = arguments.getString("songTitle")
             var songartistUpdated = arguments.getString("songArtist")
-            var sid=arguments.getInt("songId").toLong()
-            var spath=arguments.getString("songPath")
-            Statified.currentSongHelper.songId=sid
+            var sid = arguments.getInt("songId").toLong()
+            var spath = arguments.getString("songPath")
+            Statified.currentSongHelper.songId = sid
             Statified.currentSongHelper.songTitle = songTitleUpdated
             Statified.currentSongHelper.songArtist = songartistUpdated
-            Statified.currentSongHelper.songPath=spath
-            Statified.songTitleView?.setText(songTitleUpdated)
-            Statified.songArtistView?.setText(songartistUpdated)
+            Statified.currentSongHelper.songPath = spath
+            //Statified.songTitleView?.setText(songTitleUpdated)
+            //Statified.songArtistView?.setText(songartistUpdated)
             //if(Statified.favoriteContent?.checkifIdExists(Statified.currentSongHelper.songId.toInt()) as Boolean)
+            Staticated.updatetextview(Statified.currentSongHelper.songTitle as String, Statified.currentSongHelper.songArtist as String)
             Statified.fab?.setImageDrawable(ContextCompat.getDrawable(Statified.myactivity, R.drawable.favorite_on))
-
+            if (Statified.mediaplayer?.isPlaying as Boolean) {
+                Statified.playPauseImageButton?.setBackgroundResource(R.drawable.pause_icon)
+                Statified.currentSongHelper.isPlaying = true
+            } else {
+                Statified.playPauseImageButton?.setBackgroundResource(R.drawable.play_icon)
+                Statified.currentSongHelper.isPlaying = false
+            }
 
         } else if (frommainbottombar != null) {
             Statified.mediaplayer = mainf.Statified.mediaPlayer
             var songTitleUpdated = arguments.getString("songTitle")
             var songartistUpdated = arguments.getString("songArtist")
-            var sid=arguments.getInt("songId").toLong()
-            var spath=arguments.getString("songPath")
+            var sid = arguments.getInt("songId").toLong()
+            var spath = arguments.getString("songPath")
             Statified.currentSongHelper.songTitle = songTitleUpdated
             Statified.currentSongHelper.songArtist = songartistUpdated
-            Statified.currentSongHelper.songPath=spath
-            Statified.currentSongHelper.songId=sid
-            Statified.songTitleView?.setText(songTitleUpdated)
-            Statified.songArtistView?.setText(songartistUpdated)
-
+            Statified.currentSongHelper.songPath = spath
+            Statified.currentSongHelper.songId = sid
+            //Statified.songTitleView?.setText(songTitleUpdated)
+            //Statified.songArtistView?.setText(songartistUpdated)
+            Staticated.updatetextview(Statified.currentSongHelper.songTitle as String, Statified.currentSongHelper.songArtist as String)
+            if (Statified.mediaplayer?.isPlaying as Boolean) {
+                Statified.playPauseImageButton?.setBackgroundResource(R.drawable.pause_icon)
+                Statified.currentSongHelper.isPlaying = true
+            } else {
+                Statified.playPauseImageButton?.setBackgroundResource(R.drawable.play_icon)
+                Statified.currentSongHelper.isPlaying = false
+            }
 
         } else {
             Statified.mediaplayer = MediaPlayer()
@@ -573,7 +698,7 @@ class songf : Fragment(), SeekBar.OnSeekBarChangeListener {
                 /*If the song was not playing the, we start the music player and
                 * change the image to pause icon*/
             } else {
-                Statified.mediaplayer?.seekTo(Statified.currentSongHelper.trackPosition as Int)
+                //Statified.mediaplayer?.seekTo(Statified.currentSongHelper.trackPosition as Int)
                 Statified.mediaplayer?.start()
                 Statified.currentSongHelper.isPlaying = true
                 Statified.playPauseImageButton?.setBackgroundResource(R.drawable.pause_icon)

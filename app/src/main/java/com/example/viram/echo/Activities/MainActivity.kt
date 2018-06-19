@@ -23,6 +23,13 @@ import com.example.viram.echo.Fragments.mainf
 import com.example.viram.echo.Fragments.songf
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import android.R.id.button1
+import android.content.res.Configuration
+import android.os.PersistableBundle
+import android.view.View
+import com.example.viram.echo.BackgroundSoundService
+import com.example.viram.echo.UtilClass
+
 
 class MainActivity : AppCompatActivity() {
     var listoftext: ArrayList<String> = arrayListOf()
@@ -77,6 +84,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+//    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+//        super.onSaveInstanceState(outState, outPersistentState)
+//    }
+//
+//    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+//        super.onRestoreInstanceState(savedInstanceState)
+//    }
     override fun onStart() {
         super.onStart()
         try {
@@ -86,6 +100,7 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+
 
     override fun onStop() {
         super.onStop()
@@ -99,6 +114,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun clickBtn(v: View) {
+        if (v.getId() === R.id.playpausebutton) {
+            UtilClass.playing = true
+            val i = Intent(this@MainActivity,
+                    BackgroundSoundService::class.java)
+            startService(i)
+        }
+    }
     override fun onResume() {
         super.onResume()
         try {

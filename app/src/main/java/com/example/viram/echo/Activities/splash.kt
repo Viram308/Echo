@@ -3,9 +3,11 @@ package com.example.viram.echo.Activities
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.PersistableBundle
 import android.support.v4.app.ActivityCompat
 import android.widget.Toast
 import com.example.viram.echo.R
@@ -17,6 +19,13 @@ class splash : AppCompatActivity() {
             android.Manifest.permission.PROCESS_OUTGOING_CALLS,
             android.Manifest.permission.RECORD_AUDIO)
 
+//    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+//        super.onSaveInstanceState(outState, outPersistentState)
+//    }
+//
+//    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+//        super.onRestoreInstanceState(savedInstanceState)
+//    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
